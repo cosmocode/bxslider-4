@@ -187,8 +187,10 @@
 			slider.viewport.prepend(slider.loader);
 			// set el to a massive width, to hold any needed slides
 			// also strip any margin and padding from el
+
+            // Calculate the correct width for the slider instead of using a weird formula with magic numbers
 			el.css({
-				width: slider.settings.mode == 'horizontal' ? (slider.children.length * 100 + 215) + '%' : 'auto',
+				width: slider.settings.mode == 'horizontal' ? (slider.children.length * ((options.slideMargin * 2) + options.slideWidth) * options.maxSlides) + 'px' : 'auto',
 				position: 'relative'
 			});
 			// if using CSS, add the easing property
@@ -205,6 +207,7 @@
 				overflow: 'hidden',
 				position: 'relative'
 			});
+
 			slider.viewport.parent().css({
 				maxWidth: getViewportMaxWidth()
 			});
