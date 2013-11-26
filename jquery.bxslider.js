@@ -2,18 +2,18 @@
  * BxSlider v4.1.1 - Fully loaded, responsive content slider
  * http://bxslider.com
  *
- * Copyright 2012, Steven Wanderski - http://stevenwanderski.com - http://bxcreative.com
+ * Copyright 2013, Steven Wanderski - http://stevenwanderski.com - http://bxcreative.com
  * Written while drinking Belgian ales and listening to jazz
  *
- * Released under the WTFPL license - http://sam.zoy.org/wtfpl/
+ * Released under the MIT license - http://opensource.org/licenses/MIT
  */
 
 ;(function($){
 
 	var plugin = {};
-	
+
 	var defaults = {
-		
+
 		// GENERAL
 		mode: 'horizontal',
 		slideSelector: '',
@@ -40,7 +40,7 @@
 		oneToOneTouch: true,
 		preventDefaultSwipeX: true,
 		preventDefaultSwipeY: false,
-		
+
 		// PAGER
 		pager: true,
 		pagerType: 'full',
@@ -48,7 +48,7 @@
 		pagerSelector: null,
 		buildPager: null,
 		pagerCustom: null,
-		
+
 		// CONTROLS
 		controls: true,
 		nextText: 'Next',
@@ -60,7 +60,7 @@
 		stopText: 'Stop',
 		autoControlsCombine: false,
 		autoControlsSelector: null,
-		
+
 		// AUTO
 		auto: false,
 		pause: 4000,
@@ -68,13 +68,13 @@
 		autoDirection: 'next',
 		autoHover: false,
 		autoDelay: 0,
-		
+
 		// CAROUSEL
 		minSlides: 1,
 		maxSlides: 1,
 		moveSlides: 0,
 		slideWidth: 0,
-		
+
 		// CALLBACKS
 		onSliderLoad: function() {},
 		onSlideBefore: function() {},
@@ -84,15 +84,15 @@
 	}
 
 	$.fn.bxSlider = function(options){
-		
+
 		if(this.length == 0) return this;
-		
+
 		// support mutltiple elements
 		if(this.length > 1){
 			this.each(function(){$(this).bxSlider(options)});
 			return this;
 		}
-		
+
 		// create a namespace to be used throughout the plugin
 		var slider = {};
 		// set a reference to our slider element
@@ -106,14 +106,14 @@
 		var windowWidth = $(window).width();
 		var windowHeight = $(window).height();
 
-		
-		
+
+
 		/**
 		 * ===================================================================================
 		 * = PRIVATE FUNCTIONS
 		 * ===================================================================================
 		 */
-		
+
 		/**
 		 * Initializes namespace settings to be used throughout plugin
 		 */
@@ -274,36 +274,11 @@
 				return;
 			}
 			var count = 0;
-			var checkIfAllLoaded = function(){
-				if(++count == total) callback();
-			};
 			selector.find('img, iframe').each(function(){
-				var el = $(this);
-				if(el.is('img')){
-					// Use temp image instead of adding timestamp to prevent loading additional image:
-					var img = new Image(),
-						loaded = false;
-
-					$(img).on('load', function (){
-						if (loaded) return;
-						loaded = true;
-						setTimeout(checkIfAllLoaded, 0);
-					});
-
-					img.src = el.attr('src');
-
-					// Check if image has width, that means it is loaded already.
-					// This is because some browsers will not trigger load event if it's from cache.
-					setTimeout(function (){
-						if (img.width && !loaded){
-							loaded = true;
-							setTimeout(checkIfAllLoaded, 0);
-						}
-					}, 0);
-					return;
-				}
-				el.on('load', function(){
-					setTimeout(checkIfAllLoaded, 0);
+				$(this).one('load', function() {
+				  if(++count == total) callback();
+				}).each(function() {
+				  if(this.complete) $(this).load();
 				});
 			});
 		}
@@ -346,7 +321,7 @@
 			// if touchEnabled is true, setup the touch events
 			if (slider.settings.touchEnabled && !slider.settings.ticker) initTouch();
 		}
-		
+
 		/**
 		 * Returns the calculated height of the viewport, used to determine either adaptiveHeight or the maxHeight value
 		 */
@@ -410,7 +385,7 @@
 			}
 			return width;
 		}
-		
+
 		/**
 		 * Returns the calculated width to be applied to each slide
 		 */
@@ -434,7 +409,7 @@
 			}
 			return newElWidth;
 		}
-		
+
 		/**
 		 * Returns the number of slides currently visible in the viewport (includes partially visible slides)
 		 */
@@ -458,7 +433,7 @@
 			}
 			return slidesShowing;
 		}
-		
+
 		/**
 		 * Returns the number of pages (one full viewport of slides is one "page")
 		 */
@@ -485,7 +460,7 @@
 			}
 			return pagerQty;
 		}
-		
+
 		/**
 		 * Returns the number of indivual slides by which to shift the slider
 		 */
@@ -497,7 +472,7 @@
 			// if moveSlides is 0 (auto)
 			return getNumberSlidesShowing();
 		}
-		
+
 		/**
 		 * Sets the slider's (el) left or top position
 		 */
@@ -530,18 +505,18 @@
 				}
 			}
 		}
-		
+
 		/**
 		 * Sets the el's animating property position (which in turn will sometimes animate el).
 		 * If using CSS, sets the transform property. If not using CSS, sets the top / left property.
 		 *
-		 * @param value (int) 
+		 * @param value (int)
 		 *  - the animating property's value
 		 *
 		 * @param type (string) 'slider', 'reset', 'ticker'
 		 *  - the type of instance for which the function is being
 		 *
-		 * @param duration (int) 
+		 * @param duration (int)
 		 *  - the amount of time (in ms) the transition should occupy
 		 *
 		 * @param params (array) optional
@@ -598,7 +573,7 @@
 				}
 			}
 		}
-		
+
 		/**
 		 * Populates the pager with proper amount of pages
 		 */
@@ -623,7 +598,7 @@
 			// populate the pager element with pager links
 			slider.pagerEl.html(pagerHtml);
 		}
-		
+
 		/**
 		 * Appends the pager to the controls element
 		 */
@@ -646,7 +621,7 @@
 			// assign the pager click binding
 			slider.pagerEl.delegate('a', 'click', clickPagerBind);
 		}
-		
+
 		/**
 		 * Appends prev / next controls to the controls element
 		 */
@@ -674,7 +649,7 @@
 				slider.controls.el.addClass('bx-has-controls-direction').append(slider.controls.directionEl);
 			}
 		}
-		
+
 		/**
 		 * Appends start / stop auto controls to the controls element
 		 */
@@ -703,7 +678,7 @@
 			// update the auto controls
 			updateAutoControls(slider.settings.autoStart ? 'stop' : 'start');
 		}
-		
+
 		/**
 		 * Appends image captions to the DOM
 		 */
@@ -718,11 +693,11 @@
                 }
 			});
 		}
-		
+
 		/**
 		 * Click next binding
 		 *
-		 * @param e (event) 
+		 * @param e (event)
 		 *  - DOM event object
 		 */
 		var clickNextBind = function(e){
@@ -731,11 +706,11 @@
 			el.goToNextSlide();
 			e.preventDefault();
 		}
-		
+
 		/**
 		 * Click prev binding
 		 *
-		 * @param e (event) 
+		 * @param e (event)
 		 *  - DOM event object
 		 */
 		var clickPrevBind = function(e){
@@ -744,22 +719,22 @@
 			el.goToPrevSlide();
 			e.preventDefault();
 		}
-		
+
 		/**
 		 * Click start binding
 		 *
-		 * @param e (event) 
+		 * @param e (event)
 		 *  - DOM event object
 		 */
 		var clickStartBind = function(e){
 			el.startAuto();
 			e.preventDefault();
 		}
-		
+
 		/**
 		 * Click stop binding
 		 *
-		 * @param e (event) 
+		 * @param e (event)
 		 *  - DOM event object
 		 */
 		var clickStopBind = function(e){
@@ -770,7 +745,7 @@
 		/**
 		 * Click pager binding
 		 *
-		 * @param e (event) 
+		 * @param e (event)
 		 *  - DOM event object
 		 */
 		var clickPagerBind = function(e){
@@ -782,11 +757,11 @@
 			if(pagerIndex != slider.active.index) el.goToSlide(pagerIndex);
 			e.preventDefault();
 		}
-		
+
 		/**
 		 * Updates the pager links with an active class
 		 *
-		 * @param slideIndex (int) 
+		 * @param slideIndex (int)
 		 *  - index of slide to make active
 		 */
 		var updatePagerActive = function(slideIndex){
@@ -804,7 +779,7 @@
 			// apply the active class for all pagers
 			slider.pagerEl.each(function(i, el) { $(el).find('a').eq(slideIndex).addClass('active'); });
 		}
-		
+
 		/**
 		 * Performs needed actions after a slide transition
 		 */
@@ -831,7 +806,7 @@
 			// onSlideAfter callback
 			slider.settings.onSlideAfter(slider.children.eq(slider.active.index), slider.oldIndex, slider.active.index);
 		}
-		
+
 		/**
 		 * Updates the auto controls state (either active, or combined switch)
 		 *
@@ -839,16 +814,16 @@
 		 *  - the new state of the auto show
 		 */
 		var updateAutoControls = function(state){
-			// if autoControlsCombine is true, replace the current control with the new state 
+			// if autoControlsCombine is true, replace the current control with the new state
 			if(slider.settings.autoControlsCombine){
 				slider.controls.autoEl.html(slider.controls[state]);
-			// if autoControlsCombine is false, apply the "active" class to the appropriate control 
+			// if autoControlsCombine is false, apply the "active" class to the appropriate control
 			}else{
 				slider.controls.autoEl.find('a').removeClass('active');
 				slider.controls.autoEl.find('a:not(.bx-' + state + ')').addClass('active');
 			}
 		}
-		
+
 		/**
 		 * Updates the direction controls (checks if either should be hidden)
 		 */
@@ -872,7 +847,7 @@
 				}
 			}
 		}
-		
+
 		/**
 		 * Initialzes the auto process
 		 */
@@ -906,7 +881,7 @@
 				});
 			}
 		}
-		
+
 		/**
 		 * Initialzes the ticker process
 		 */
@@ -949,7 +924,7 @@
 			// start the ticker loop
 			tickerLoop();
 		}
-		
+
 		/**
 		 * Runs a continuous loop, news ticker-style
 		 */
@@ -969,7 +944,7 @@
 			var params = {resetValue: resetValue};
 			setPositionProperty(animateProperty, 'ticker', speed, params);
 		}
-		
+
 		/**
 		 * Initializes touch events
 		 */
@@ -981,11 +956,11 @@
 			}
 			slider.viewport.bind('touchstart', onTouchStart);
 		}
-		
+
 		/**
 		 * Event handler for "touchstart"
 		 *
-		 * @param e (event) 
+		 * @param e (event)
 		 *  - DOM event object
 		 */
 		var onTouchStart = function(e){
@@ -1004,11 +979,11 @@
 				slider.viewport.bind('touchend', onTouchEnd);
 			}
 		}
-		
+
 		/**
 		 * Event handler for "touchmove"
 		 *
-		 * @param e (event) 
+		 * @param e (event)
 		 *  - DOM event object
 		 */
 		var onTouchMove = function(e){
@@ -1037,11 +1012,11 @@
 				setPositionProperty(value, 'reset', 0);
 			}
 		}
-		
+
 		/**
 		 * Event handler for "touchend"
 		 *
-		 * @param e (event) 
+		 * @param e (event)
 		 *  - DOM event object
 		 */
 		var onTouchEnd = function(e){
@@ -1104,20 +1079,20 @@
 				el.redrawSlider();
 			}
 		}
-		
+
 		/**
 		 * ===================================================================================
 		 * = PUBLIC FUNCTIONS
 		 * ===================================================================================
 		 */
-		
+
 		/**
 		 * Performs slide transition to the specified slide
 		 *
-		 * @param slideIndex (int) 
+		 * @param slideIndex (int)
 		 *  - the destination slide's index (zero-based)
 		 *
-		 * @param direction (string) 
+		 * @param direction (string)
 		 *  - INTERNAL USE ONLY - the direction of travel ("prev" / "next")
 		 */
 		el.goToSlide = function(slideIndex, direction){
@@ -1200,8 +1175,8 @@
 					var requestEl = slideIndex * getMoveBy();
 					position = slider.children.eq(requestEl).position();
 				}
-				
-				/* If the position doesn't exist 
+
+				/* If the position doesn't exist
 				 * (e.g. if you destroy the slider on a next click),
 				 * it doesn't throw an error.
 				 */
@@ -1212,7 +1187,7 @@
 				}
 			}
 		}
-		
+
 		/**
 		 * Transitions to the next slide in the show
 		 */
@@ -1222,7 +1197,7 @@
 			var pagerIndex = parseInt(slider.active.index) + 1;
 			el.goToSlide(pagerIndex, 'next');
 		}
-		
+
 		/**
 		 * Transitions to the prev slide in the show
 		 */
@@ -1232,11 +1207,11 @@
 			var pagerIndex = parseInt(slider.active.index) - 1;
 			el.goToSlide(pagerIndex, 'prev');
 		}
-		
+
 		/**
 		 * Starts the auto show
 		 *
-		 * @param preventControlUpdate (boolean) 
+		 * @param preventControlUpdate (boolean)
 		 *  - if true, auto controls state will not be updated
 		 */
 		el.startAuto = function(preventControlUpdate){
@@ -1249,11 +1224,11 @@
 			// if auto controls are displayed and preventControlUpdate is not true
 			if (slider.settings.autoControls && preventControlUpdate != true) updateAutoControls('stop');
 		}
-		
+
 		/**
 		 * Stops the auto show
 		 *
-		 * @param preventControlUpdate (boolean) 
+		 * @param preventControlUpdate (boolean)
 		 *  - if true, auto controls state will not be updated
 		 */
 		el.stopAuto = function(preventControlUpdate){
@@ -1265,14 +1240,14 @@
 			// if auto controls are displayed and preventControlUpdate is not true
 			if (slider.settings.autoControls && preventControlUpdate != true) updateAutoControls('start');
 		}
-		
+
 		/**
 		 * Returns current slide index (zero-based)
 		 */
 		el.getCurrentSlide = function(){
 			return slider.active.index;
 		}
-		
+
 		/**
 		 * Returns number of slides in show
 		 */
@@ -1333,9 +1308,9 @@
 			el.destroySlider();
 			init();
 		}
-		
+
 		init();
-		
+
 		// returns the current jQuery object
 		return this;
 	}
